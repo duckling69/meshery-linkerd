@@ -111,7 +111,7 @@ jobs:
           echo "---
           timestamp: $(jq '.metadata.runon| strptime("%a %b %e %X %Z %Y") | strftime("%Y-%m-%d %X %Z %a")' data.json)
           meshery-component: meshery-linkerd
-          meshery-component-version: $version
+          meshery-component-version: ${{ needs.SetPatternfile.outputs.sm_version }}
           meshery-server-version: $(jq '.metadata."meshery-server-version"' data.json)
           k8s-distro: minikube
           k8s-version: $(jq '.metadata.k8s_version' data.json)

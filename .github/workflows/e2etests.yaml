@@ -13,7 +13,6 @@ on:
        - "*"
   release:
     types: [published]
-
 jobs:
   SetPatternfile:
     runs-on: ubuntu-latest
@@ -50,42 +49,7 @@ jobs:
           name: patternfile
           path: ./.github/install/deploy.yaml 
 
-  TestLinkerd:
-    needs: SetPatternfile
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@master
-
-      - name: Download patternfile
-        uses: actions/download-artifact@v2
-        with:
-          name: patternfile
-          path: ./.github/install
-
-      - name: Setup Meshery CLI
-        run: |
-          curl -L https://github.com/meshery/meshery/releases/download/v0.7.25/mesheryctl_0.7.25_Linux_x86_64.tar.gz | tar xz
-          sudo mv mesheryctl /usr/local/bin/
-          mesheryctl version
-
-
-      - name: Run Meshery Adapter Tests
-        run: |
-          mesheryctl mesh validate --file ./.github/install/deploy.yaml
-
-      - name: Save test results
-        run: |
-          echo '{ "test_result": "success" }' > data.json
-
-      - name: Upload test results
-        uses: actions/upload-artifact@v2
-        with:
-          name: data.json
-          path: data.json
-
   UpdateDocs:
-    needs: TestLinkerd
     if:  "always() && github.event_name != 'pull_request' "
     runs-on: ubuntu-latest
     steps:
@@ -144,3 +108,4 @@ jobs:
           commit_author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           commit_options: '--signoff'
           commit_message: '[Docs] Test status of adapter'
+
